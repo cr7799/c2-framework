@@ -71,6 +71,8 @@ It enables operators to:
 
 ---
 
+![Dashboard preview](dashboard-screenshot.png)
+
 ## 🚀 Getting Started
 
 ### Prerequisites (Server)

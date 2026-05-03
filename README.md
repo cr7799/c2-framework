@@ -99,7 +99,7 @@ Choose one of the following methods:
 
 **Method A – Arduino BadUSB (fully automatic)**
 
-- Upload `arduino.txt` (or the equivalent `.ino` file) to an Arduino Leonardo, Micro, or compatible board.
+- Upload `arduino.ino` to an Arduino Leonardo, Micro, or compatible board.
 - Edit the IP address inside the sketch to match your server (`192.168.1.53`).
 - Plug the Arduino into the target machine. It will wait 3 seconds, then inject all keystrokes to download and run the installer. No windows remain visible.
 
@@ -160,7 +160,7 @@ c2-framework/
 ├── backdoor.ps1             # PowerShell backdoor
 ├── installer.ps1            # Deployment script with GUI
 ├── cleaner.ps1              # Removal/cleanup script
-├── arduino.txt              # Arduino HID deployment payload
+├── arduino.ino              # Arduino HID deployment payload
 ├── cam.exe                  # (supplied by user) webcam capture tool
 ├── uploads/                 # Exfiltrated files (auto‑created)
 ├── results/                 # Command output logs (auto‑created)

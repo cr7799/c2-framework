@@ -1,4 +1,4 @@
-# 🎯 C2 Framework – Remote Command & Control for Windows
+# 🎯 Remote Command & Control (C2) Framework for Windows
 
 [License: MIT] [Python 3.8+] [PowerShell 5.1+]
 
@@ -6,7 +6,7 @@
 
 ## 📖 Overview
 
-The **C2 Framework** is a complete remote administration solution consisting of:
+This **Command & Control (C2) framework** is a complete remote administration solution consisting of:
 
 - A lightweight **Flask‑based C2 server** with a modern web dashboard.
 - A **stealthy PowerShell backdoor** that connects to the server, executes commands, and returns output.
